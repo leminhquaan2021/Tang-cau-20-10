@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Ngày 20/10</title>
+    <style>
+        /* Toàn bộ giao diện và nền vũ trụ huyền ảo */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            position: relative;
+        }
+
+        /* Hiệu ứng mặt đất cong ở góc dưới */
+        .ground {
+            position: absolute;
+            bottom: -50px;
+            width: 140%;
+            height: 200px;
+            background: radial-gradient(circle at top, #111424 0%, #05060a 100%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Container chính chứa lời chúc và các nút bấm */
+        .container {
+            text-align: center;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* Dòng chữ lời chúc với hiệu ứng phát sáng mờ ảo */
+        .wish-text {
+            color: #ffffff;
+            font-size: 24px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: pulse 3s ease-in-out infinite;
+            padding: 0 20px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Khu vực chứa 2 ô vuông phát sáng */
+        .box-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Ô vuông phát sáng công nghệ Neon giống trong ảnh */
+        .neon-box {
+            width: 100px;
+            height: 100px;
+            background: #00f3ff;
+            border-radius: 20px;
+            box-shadow: 0 0 20px #00f3ff, 
+                        0 0 40px #00f3ff, 
+                        0 0 80px rgba(0, 243, 255, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .neon-box:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0 30px #00f3ff, 
+                        0 0 60px #00f3ff, 
+                        0 0 120px #00f3ff;
+        }
+
+        /* Canvas để vẽ các hạt sao/bướm bay lấp lánh tự động */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ground"></div>
+
+    <div class="container">
+        <!-- Bạn có thể thay đổi lời chúc ở dòng dưới đây -->
+        <h1 class="wish-text">chúc cậu thật xinh đẹp ✨</h1>
+        
+        <div class="box-container">
+            <div class="neon-box" onclick="boxClicked(1)"></div>
+            <div class="neon-box" onclick="boxClicked(2)"></div>
+        </div>
+    </div>
+
+    <canvas id="starfield"></canvas>
+
+    <script>
+        // Tạo hiệu ứng hạt lấp lánh (Stars/Particles) tự động bay lên
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = Math.random() * 0.8 + 0.2;
+                this.speedX = Math.sin(Math.random() * 2) * 0.3;
+                this.alpha = Math.random() * 0.5 + 0.5;
+                this.fade = Math.random() * 0.005 + 0.002;
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                this.alpha -= this.fade;
+                if (this.alpha <= 0) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height + 10;
+                    this.alpha = Math.random() * 0.5 + 0.5;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ffffff';
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        // Hàm xử lý sự kiện khi bấm vào các hộp phát sáng
+        function boxClicked(boxNumber) {
+            if(boxNumber === 1) {
+                alert("Bạn vừa mở chiếc hộp may mắn thứ nhất! Chúc bạn ngày 20/10 ngập tràn niềm vui!");
+            } else {
+                alert("Chiếc hộp thứ hai mang đến cho bạn một cái ôm ấm áp và ngàn lời chúc tốt đẹp nhất!");
+            }
+        }
+    </script>
+</body>
+</html>
